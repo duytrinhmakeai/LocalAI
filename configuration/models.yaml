@@ -1,0 +1,36 @@
+# LocalAI Models Configuration
+# This file contains model configurations for LocalAI
+
+- name: "gpt-3.5-turbo"
+  model: "phi-2.Q8_0.gguf"
+  backend: "llama-cpp"
+  context_size: 2048
+  threads: 4
+  parameters:
+    temperature: 0.7
+    top_k: 40
+    top_p: 0.95
+    repeat_penalty: 1.1
+  template:
+    completion: |
+      ### Instruction:
+      {{.Input}}
+      ### Response:
+    chat: |
+      ### Instruction:
+      {{range .Messages}}{{if eq .Role "user"}}### User:
+      {{.Content}}
+      {{else if eq .Role "assistant"}}### Assistant:
+      {{.Content}}
+      {{end}}{{end}}
+      ### Assistant:
+
+- name: "text-embedding-ada-002"
+  model: "bert-embeddings"
+  backend: "bert-embeddings"
+  embeddings: true
+  
+- name: "whisper-1"
+  model: "whisper-base"
+  backend: "whisper"
+  audio: true

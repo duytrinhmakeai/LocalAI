@@ -1,0 +1,10 @@
+galleries:
+  - name: "localai"
+    url: "github:mudler/LocalAI/gallery/index.yaml"
+    enabled: true
+  - name: "local"
+    url: "file:///gallery/index.yaml"
+    enabled: true
+  - name: "huggingface"
+    url: "https://raw.githubusercontent.com/mudler/LocalAI-examples/main/gallery/huggingface.yaml"
+    enabled: false
