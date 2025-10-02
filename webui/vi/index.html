@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LocalAI by MakeAI - Trợ Lý AI Miễn Phí Chạy Cục Bộ</title>
+    <meta name="description" content="LocalAI - Giải pháp AI mã nguồn mở, miễn phí, chạy hoàn toàn trên máy của bạn. Thay thế OpenAI, Claude và các dịch vụ AI khác.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        .hero-pattern {
+            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        .feature-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .feature-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-gray-900 via-gray-950 to-black text-gray-200">
+    <div class="flex flex-col min-h-screen">
+        <!-- Header/Navbar -->
+        <nav class="bg-gray-900/80 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-50">
+            <div class="container mx-auto px-4">
+                <div class="flex items-center justify-between h-16">
+                    <!-- Logo -->
+                    <div class="flex items-center space-x-3">
+                        <img src="../makeailogo.jpg" alt="MakeAI Logo" class="h-10 w-auto rounded-lg">
+                        <div>
+                            <h1 class="text-xl font-bold text-white">LocalAI</h1>
+                            <p class="text-xs text-gray-400">by MakeAI</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation -->
+                    <div class="hidden md:flex items-center space-x-6">
+                        <a href="/" class="text-blue-400 font-semibold hover:text-blue-300 transition">
+                            <i class="fas fa-home mr-2"></i>Trang chủ
+                        </a>
+                        <a href="/chat" class="text-gray-300 hover:text-white transition">
+                            <i class="fas fa-comments mr-2"></i>Trò chuyện
+                        </a>
+                        <a href="/demo" class="text-gray-300 hover:text-white transition">
+                            <i class="fas fa-flask mr-2"></i>Demo
+                        </a>
+                        <a href="/browse" class="text-gray-300 hover:text-white transition">
+                            <i class="fas fa-th mr-2"></i>Thư viện Model
+                        </a>
+                        <a href="/models" class="text-gray-300 hover:text-white transition">
+                            <i class="fas fa-cog mr-2"></i>Quản lý
+                        </a>
+                    </div>
+                    
+                    <!-- Language Switcher -->
+                    <div class="flex items-center space-x-3">
+                        <select id="langSwitch" class="bg-gray-800 text-white rounded-lg px-3 py-2 text-sm border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="vi" selected>🇻🇳 Tiếng Việt</option>
+                            <option value="en">🇺🇸 English</option>
+                        </select>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse" id="statusDot"></div>
+                            <span class="text-sm text-gray-400" id="statusText">Đang kết nối...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="container mx-auto px-4 py-8 flex-grow">
+            <!-- Hero Section -->
+            <div class="relative bg-gradient-to-r from-blue-900/40 via-indigo-900/30 to-purple-900/40 rounded-3xl shadow-2xl p-8 mb-12 overflow-hidden fade-in">
+                <!-- Background Pattern -->
+                <div class="absolute inset-0 opacity-10">
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20"></div>
+                    <div class="absolute top-0 left-0 w-full h-full hero-pattern"></div>
+                </div>
+                
+                <div class="relative max-w-5xl mx-auto text-center">
+                    <h1 class="text-5xl md:text-6xl font-bold text-white mb-6">
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">
+                            Chào mừng đến với <em class="not-italic font-black">LocalAI</em>
+                        </span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-gray-300 mb-4 font-light">
+                        Giải pháp AI mã nguồn mở mạnh mẽ thay thế OpenAI, Claude và nhiều hơn nữa
+                    </p>
+                    <p class="text-lg text-gray-400 mb-8">
+                        100% miễn phí • Chạy cục bộ • Bảo mật tuyệt đối • Không giới hạn
+                    </p>
+                    
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <a href="/chat" 
+                           class="group relative inline-flex items-center bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 px-8 rounded-xl font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25">
+                            <i class="fas fa-comments mr-3 text-lg"></i>
+                            <span>Bắt đầu trò chuyện</span>
+                            <i class="fas fa-arrow-right ml-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300"></i>
+                        </a>
+                        
+                        <a href="/browse" 
+                           class="group relative inline-flex items-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3 px-8 rounded-xl font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/25">
+                            <i class="fas fa-images mr-3 text-lg"></i>
+                            <span>Thư viện Model</span>
+                            <i class="fas fa-arrow-right ml-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300"></i>
+                        </a>
+                        
+                        <a href="/import-model"
+                           class="group relative inline-flex items-center bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-3 px-8 rounded-xl font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl hover:shadow-green-500/25">
+                            <i class="fas fa-plus mr-3 text-lg"></i>
+                            <span>Import Model</span>
+                            <i class="fas fa-upload ml-3 opacity-70 group-hover:opacity-100 transition-opacity"></i>
+                        </a>
+
+                        <button id="reload-models-btn"
+                           class="group relative inline-flex items-center bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white py-3 px-8 rounded-xl font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-xl hover:shadow-orange-500/25">
+                            <i class="fas fa-sync-alt mr-3 text-lg" id="reloadIcon"></i>
+                            <span>Cập nhật Models</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 fade-in">
+                <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/40 border border-blue-700/50 rounded-2xl p-6 text-center card-hover">
+                    <div class="text-4xl font-bold text-blue-400 mb-2" id="modelCount">0</div>
+                    <div class="text-gray-300 font-semibold">Models đã cài</div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-green-900/40 to-green-800/40 border border-green-700/50 rounded-2xl p-6 text-center card-hover">
+                    <div class="text-4xl font-bold text-green-400" id="apiStatus">
+                        <i class="fas fa-circle-notch loading"></i>
+                    </div>
+                    <div class="text-gray-300 font-semibold">API Status</div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-purple-900/40 to-purple-800/40 border border-purple-700/50 rounded-2xl p-6 text-center card-hover">
+                    <div class="text-4xl font-bold text-purple-400" id="versionText">v3.5.4</div>
+                    <div class="text-gray-300 font-semibold">Phiên bản</div>
+                </div>
+                
+                <div class="bg-gradient-to-br from-orange-900/40 to-orange-800/40 border border-orange-700/50 rounded-2xl p-6 text-center card-hover">
+                    <div class="text-4xl font-bold text-orange-400">100%</div>
+                    <div class="text-gray-300 font-semibold">Miễn phí</div>
+                </div>
+            </div>
+
+            <!-- Models Section -->
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-3xl font-bold text-white">
+                        <i class="fas fa-robot mr-3 text-blue-400"></i>
+                        Models AI của bạn
+                    </h2>
+                    <button onclick="location.reload()" class="text-gray-400 hover:text-white transition">
+                        <i class="fas fa-sync-alt mr-2"></i>Làm mới
+                    </button>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingModels" class="text-center py-12">
+                    <i class="fas fa-spinner fa-spin text-5xl text-blue-400 mb-4"></i>
+                    <p class="text-xl text-gray-400">Đang tải danh sách models...</p>
+                </div>
+
+                <!-- Models Grid -->
+                <div id="modelsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+
+                <!-- No Models State -->
+                <div id="noModels" class="hidden relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-12 shadow-xl backdrop-blur-sm">
+                    <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-yellow-500/5 to-orange-500/5"></div>
+                    <div class="relative text-center max-w-4xl mx-auto">
+                        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-yellow-500/20 to-orange-500/20 mb-6">
+                            <i class="text-yellow-400 text-3xl fas fa-robot"></i>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-100 mb-6">Chưa có model nào được cài đặt</h2>
+                        <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                            Bắt đầu bằng cách cài đặt models từ thư viện hoặc xem hướng dẫn của chúng tôi
+                        </p>
+                        
+                        <div class="flex flex-wrap justify-center gap-4 mb-8">
+                            <a href="/browse" class="inline-flex items-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105">
+                                <i class="fas fa-images mr-2"></i>
+                                Duyệt Thư viện
+                            </a>
+                            <a href="https://localai.io/basics/getting_started/" target="_blank" class="inline-flex items-center bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105">
+                                <i class="fas fa-book mr-2"></i>
+                                Tài liệu
+                            </a>
+                        </div>
+
+                        <div class="mt-8 p-6 bg-blue-900/20 border border-blue-700/30 rounded-xl">
+                            <h3 class="text-lg font-bold text-blue-400 mb-3">💡 Gợi ý cho bạn:</h3>
+                            <div class="text-left text-gray-300 space-y-2">
+                                <p>• <strong>Phi-2</strong> - Model nhỏ gọn, nhanh, phù hợp máy yếu</p>
+                                <p>• <strong>Llama 3</strong> - Model mạnh mẽ cho chat và văn bản</p>
+                                <p>• <strong>Whisper</strong> - Nhận dạng giọng nói chính xác</p>
+                                <p>• <strong>Stable Diffusion</strong> - Tạo hình ảnh từ văn bản</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-white mb-8 text-center">
+                    <i class="fas fa-star mr-3 text-yellow-400"></i>
+                    Tính năng nổi bật
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-6 card-hover">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-4 feature-icon">
+                            <i class="fas fa-shield-alt text-2xl text-blue-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Bảo mật 100%</h3>
+                        <p class="text-gray-400">Dữ liệu chạy hoàn toàn trên máy bạn, không gửi ra ngoài</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-6 card-hover">
+                        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mb-4 feature-icon">
+                            <i class="fas fa-infinity text-2xl text-green-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Không giới hạn</h3>
+                        <p class="text-gray-400">Sử dụng thoải mái, không lo về API quota hay chi phí</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-6 card-hover">
+                        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-4 feature-icon">
+                            <i class="fas fa-code text-2xl text-purple-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Mã nguồn mở</h3>
+                        <p class="text-gray-400">FOSS - Tự do sử dụng, chỉnh sửa và phát triển</p>
+                    </div>
+                    
+                    <div class="bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 rounded-2xl p-6 card-hover">
+                        <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4 feature-icon">
+                            <i class="fas fa-plug text-2xl text-orange-400"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Tương thích</h3>
+                        <p class="text-gray-400">Tương thích API OpenAI, dễ dàng tích hợp</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <a href="/chat" class="group bg-gradient-to-br from-blue-900/40 to-blue-800/40 border border-blue-700/50 rounded-2xl p-8 hover:border-blue-600 transition-all card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fas fa-comments text-4xl text-blue-400 group-hover:scale-110 transition-transform"></i>
+                        <i class="fas fa-arrow-right text-2xl text-gray-500 group-hover:text-blue-400 group-hover:translate-x-2 transition-all"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Chat với AI</h3>
+                    <p class="text-gray-400">Trò chuyện với các models AI mạnh mẽ</p>
+                </a>
+                
+                <a href="/text2image" class="group bg-gradient-to-br from-purple-900/40 to-purple-800/40 border border-purple-700/50 rounded-2xl p-8 hover:border-purple-600 transition-all card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fas fa-image text-4xl text-purple-400 group-hover:scale-110 transition-transform"></i>
+                        <i class="fas fa-arrow-right text-2xl text-gray-500 group-hover:text-purple-400 group-hover:translate-x-2 transition-all"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Tạo hình ảnh</h3>
+                    <p class="text-gray-400">Tạo hình ảnh từ văn bản mô tả</p>
+                </a>
+                
+                <a href="/tts" class="group bg-gradient-to-br from-green-900/40 to-green-800/40 border border-green-700/50 rounded-2xl p-8 hover:border-green-600 transition-all card-hover">
+                    <div class="flex items-center justify-between mb-4">
+                        <i class="fas fa-volume-up text-4xl text-green-400 group-hover:scale-110 transition-transform"></i>
+                        <i class="fas fa-arrow-right text-2xl text-gray-500 group-hover:text-green-400 group-hover:translate-x-2 transition-all"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Chuyển văn bản thành giọng nói</h3>
+                    <p class="text-gray-400">Text-to-Speech chất lượng cao</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900/80 border-t border-gray-800 py-8">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <img src="../makeailogo.jpg" alt="MakeAI Logo" class="h-10 w-auto rounded-lg">
+                            <div>
+                                <h3 class="font-bold text-white">LocalAI by MakeAI</h3>
+                                <p class="text-sm text-gray-400">localai.makeai.vn</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm">
+                            Giải pháp AI mã nguồn mở, miễn phí, chạy hoàn toàn cục bộ trên máy của bạn.
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-bold text-white mb-4">Liên kết hữu ích</h4>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li><a href="https://localai.io" target="_blank" class="hover:text-white transition"><i class="fas fa-book mr-2"></i>Tài liệu chính thức</a></li>
+                            <li><a href="https://github.com/mudler/LocalAI" target="_blank" class="hover:text-white transition"><i class="fab fa-github mr-2"></i>GitHub Repository</a></li>
+                            <li><a href="/swagger" class="hover:text-white transition"><i class="fas fa-code mr-2"></i>API Documentation</a></li>
+                            <li><a href="/demo" class="hover:text-white transition"><i class="fas fa-flask mr-2"></i>Demo Chat</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-bold text-white mb-4">Thông tin</h4>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li><i class="fas fa-server mr-2 text-blue-400"></i>Server: 103.65.235.141</li>
+                            <li><i class="fas fa-globe mr-2 text-green-400"></i>Domain: localai.makeai.vn</li>
+                            <li><i class="fas fa-lock mr-2 text-purple-400"></i>SSL: Self-Signed (Trusted)</li>
+                            <li><i class="fas fa-code-branch mr-2 text-orange-400"></i>Version: <span id="footerVersion">v3.5.4</span></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-800 mt-8 pt-6 text-center text-sm text-gray-500">
+                    <p>© 2025 MakeAI Vietnam. LocalAI là phần mềm mã nguồn mở theo giấy phép MIT.</p>
+                    <p class="mt-2">Được phát triển với ❤️ tại Việt Nam</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // API Base URL
+        const API_BASE = window.location.origin;
+
+        // Check API Status
+        async function checkAPIStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/readyz`);
+                const status = await response.text();
+                
+                const statusDot = document.getElementById('statusDot');
+                const statusText = document.getElementById('statusText');
+                const apiStatus = document.getElementById('apiStatus');
+                
+                if (status === 'OK') {
+                    statusDot.className = 'w-2 h-2 bg-green-500 rounded-full animate-pulse';
+                    statusText.textContent = 'Hoạt động';
+                    apiStatus.innerHTML = '<i class="fas fa-check-circle"></i>';
+                    apiStatus.className = 'text-4xl font-bold text-green-400';
+                } else {
+                    statusDot.className = 'w-2 h-2 bg-yellow-500 rounded-full animate-pulse';
+                    statusText.textContent = 'Đang khởi động';
+                    apiStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+                    apiStatus.className = 'text-4xl font-bold text-yellow-400';
+                }
+            } catch (error) {
+                const statusDot = document.getElementById('statusDot');
+                const statusText = document.getElementById('statusText');
+                const apiStatus = document.getElementById('apiStatus');
+                
+                statusDot.className = 'w-2 h-2 bg-red-500 rounded-full';
+                statusText.textContent = 'Lỗi kết nối';
+                apiStatus.innerHTML = '<i class="fas fa-times-circle"></i>';
+                apiStatus.className = 'text-4xl font-bold text-red-400';
+            }
+        }
+
+        // Load Models
+        async function loadModels() {
+            const loadingEl = document.getElementById('loadingModels');
+            const gridEl = document.getElementById('modelsGrid');
+            const noModelsEl = document.getElementById('noModels');
+            
+            try {
+                const response = await fetch(`${API_BASE}/v1/models`);
+                const data = await response.json();
+                
+                loadingEl.classList.add('hidden');
+                
+                if (data.data && data.data.length > 0) {
+                    document.getElementById('modelCount').textContent = data.data.length;
+                    gridEl.classList.remove('hidden');
+                    
+                    gridEl.innerHTML = data.data.map(model => `
+                        <div class="bg-gradient-to-br from-gray-800/90 to-gray-900/90 border border-gray-700 rounded-2xl p-6 card-hover">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-brain text-2xl text-blue-400"></i>
+                                </div>
+                                <span class="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-semibold rounded-full">
+                                    Sẵn sàng
+                                </span>
+                            </div>
+                            <h3 class="font-bold text-white text-lg mb-2 truncate">${model.id}</h3>
+                            <p class="text-gray-400 text-sm mb-4">Model AI đã cài đặt</p>
+                            <div class="flex gap-2">
+                                <a href="/chat?model=${model.id}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg text-sm font-semibold text-center transition">
+                                    <i class="fas fa-comments mr-1"></i>Chat
+                                </a>
+                                <button onclick="testModel('${model.id}')" class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm font-semibold transition">
+                                    <i class="fas fa-vial mr-1"></i>Test
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    noModelsEl.classList.remove('hidden');
+                    document.getElementById('modelCount').textContent = '0';
+                }
+            } catch (error) {
+                loadingEl.classList.add('hidden');
+                noModelsEl.classList.remove('hidden');
+                console.error('Lỗi tải models:', error);
+            }
+        }
+
+        // Test Model
+        function testModel(modelId) {
+            alert(`Test model: ${modelId}\nChức năng đang phát triển...`);
+        }
+
+        // Reload Models
+        document.getElementById('reload-models-btn')?.addEventListener('click', async function() {
+            const icon = document.getElementById('reloadIcon');
+            icon.classList.add('fa-spin');
+            
+            try {
+                await fetch(`${API_BASE}/models/apply`, { method: 'POST' });
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            } catch (error) {
+                alert('Lỗi khi cập nhật models: ' + error.message);
+                icon.classList.remove('fa-spin');
+            }
+        });
+
+        // Language Switcher
+        document.getElementById('langSwitch')?.addEventListener('change', function(e) {
+            if (e.target.value === 'en') {
+                window.location.href = '/';
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAPIStatus();
+            loadModels();
+            
+            // Refresh status every 30 seconds
+            setInterval(checkAPIStatus, 30000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # LocalAI service
+  localai:
+    image: localai/localai:latest
+    container_name: localai
+    environment:
+      - MODELS_PATH=/models
+      - BACKENDS_PATH=/backends
+      - DEBUG=true
+      - THREADS=4
+      - CONTEXT_SIZE=2048
+      - UPLOAD_LIMIT=20
+      - 'GALLERIES=[{"name": "localai", "url": "github:mudler/LocalAI/gallery/index.yaml"}]'
+    volumes:
+      - ./models:/models
+      - ./backends:/backends
+      - ./gallery:/gallery
+      - ./configuration:/configuration
+    restart: unless-stopped
+    networks:
+      - localai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/readyz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: localai-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/logs:/var/log/nginx
+      - ./webui:/usr/share/nginx/html:ro
+    depends_on:
+      - localai
+    restart: unless-stopped
+    networks:
+      - localai-network
+
+networks:
+  localai-network:
+    driver: bridge
